@@ -1,0 +1,53 @@
+from crewai import Agent
+from langchain.tools import Tool
+import os
+from PIL import Image
+
+def analyze_outfit(image_path):
+    """
+    Analyze an outfit in an image.
+    
+    Args:
+        image_path (str): Path to the image
+        
+    Returns:
+        str: Analysis of the outfit
+    """
+    # This would be replaced with actual image analysis logic
+    # For demonstration, we're using a placeholder
+    try:
+        Image.open(image_path)  # Check if image exists and can be opened
+        return f"Successfully analyzed the outfit in {image_path}. The clothing appears to fit well and complements the person's features."
+    except Exception as e:
+        return f"Failed to analyze image: {str(e)}"
+
+def create_style_consultant_agent():
+    """
+    Creates the Style Consultant agent that analyzes and provides feedback on outfits.
+    
+    Returns:
+        Agent: The configured style consultant agent
+    """
+    # Create tools for the agent
+    analyze_outfit_tool = Tool(
+        name="Analyze Outfit",
+        func=analyze_outfit,
+        description="Analyze how an outfit looks on a person in an image."
+    )
+    
+    # Create the style consultant agent
+    agent = Agent(
+        role="Fashion and Style Consultant",
+        goal="Provide expert fashion advice and styling recommendations",
+        backstory="""
+        You are a renowned fashion stylist who has worked with celebrities and top fashion 
+        magazines. You have an eye for detail and can tell immediately if a piece of clothing 
+        fits well or not. You're known for your honest but constructive feedback and ability 
+        to recommend adjustments to make any outfit look better.
+        """,
+        verbose=True,
+        allow_delegation=False,
+        tools=[analyze_outfit_tool]
+    )
+    
+    return agent
